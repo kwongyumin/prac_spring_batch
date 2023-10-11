@@ -38,6 +38,10 @@ public class Customer {
         this.status = Status.NORMAL;
     }
 
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     public void setLoginAt(LocalDateTime loginAt) {
         this.loginAt = loginAt;
     }

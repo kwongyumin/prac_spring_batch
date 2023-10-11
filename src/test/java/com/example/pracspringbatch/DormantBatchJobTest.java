@@ -25,7 +25,7 @@ class DormantBatchJobTest {
     @DisplayName("로그인 시간이 일년을 경과한 고객이 세명 , 일년 이내 로그인한 고객이 다섯명이면 3명의 고객이 휴먼전환 대상이다.")
     void test1() {
 
-        // given
+        // given - 사전 데이터
         saveCustomer(366);
         saveCustomer(366);
         saveCustomer(366);
@@ -39,13 +39,57 @@ class DormantBatchJobTest {
         // when
         dormantBatchJob.execute();
 
-        // then
+        // then - 결과
         final long dormantCnt = customerRepository.findAll()
                 .stream()
                 .filter(it -> it.getStatus() == Customer.Status.DORMANT)
                 .count();
 
         Assertions.assertThat(dormantCnt).isEqualTo(3);
+    }
+    @Test
+    @DisplayName("고객이 열명이 있지만 모두다 휴먼대상이 아니라면 , 휴먼대상의 인원은 0 명이다.")
+    void test2() {
+
+        // given - 사전 데이터
+        saveCustomer(1);
+        saveCustomer(1);
+        saveCustomer(1);
+        saveCustomer(1);
+        saveCustomer(1);
+
+        saveCustomer(1);
+        saveCustomer(1);
+        saveCustomer(1);
+        saveCustomer(1);
+        saveCustomer(1);
+
+        // when
+        dormantBatchJob.execute();
+
+        // then
+        final long dormantCnt = customerRepository.findAll()
+                .stream()
+                .filter(it -> it.getStatus() == Customer.Status.DORMANT)
+                .count();
+
+        Assertions.assertThat(dormantCnt).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("고객이 없는 경우에도 배치는 정상 동작해야한다.")
+    void test3() {
+
+        // when
+        dormantBatchJob.execute();
+
+        // then
+        final long dormantCnt = customerRepository.findAll()
+                .stream()
+                .filter(it -> it.getStatus() == Customer.Status.DORMANT)
+                .count();
+
+        Assertions.assertThat(dormantCnt).isEqualTo(0);
     }
 
     private void saveCustomer(long loginMinusDays) {
@@ -55,15 +99,4 @@ class DormantBatchJobTest {
         customerRepository.save(test);
     }
 
-    @Test
-    @DisplayName("고객이 열명이 있지만 모두다 휴먼대상이 아니라면 , 휴먼대상의 인원은 0 명이다.")
-    void test2() {
-
-    }
-
-    @Test
-    @DisplayName("고객이 없는 경우에도 배치는 정상 동작해야한다.")
-    void test3() {
-
-    }
 }
