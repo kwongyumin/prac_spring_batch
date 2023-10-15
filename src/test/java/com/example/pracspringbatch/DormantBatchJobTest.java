@@ -1,6 +1,7 @@
 package com.example.pracspringbatch;
 
 import com.example.pracspringbatch.batch.BatchStatus;
+import com.example.pracspringbatch.batch.Job;
 import com.example.pracspringbatch.batch.JobExecution;
 import com.example.pracspringbatch.customer.Customer;
 import com.example.pracspringbatch.customer.CustomerRepository;
@@ -22,7 +23,7 @@ class DormantBatchJobTest {
     private CustomerRepository customerRepository;
 
     @Autowired
-    private DormantBatchJob dormantBatchJob;
+    private Job dormantBatchJob;
 
     @BeforeEach
     public void setUp(){
@@ -107,7 +108,7 @@ class DormantBatchJobTest {
     @Test
     @DisplayName("배치가 싪패하면 BatchStatus 는 FAILED 를 반환해야한다.")
     void test4() {
-        final DormantBatchJob dormantBatchJob = new DormantBatchJob(null);
+        final Job dormantBatchJob = new Job(null,null);
 
         final JobExecution result = dormantBatchJob.execute();
 
