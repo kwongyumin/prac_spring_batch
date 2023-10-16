@@ -1,28 +1,38 @@
 package com.example.pracspringbatch.batch;
 
-import com.example.pracspringbatch.batch.BatchStatus;
-import com.example.pracspringbatch.batch.JobExecution;
-import com.example.pracspringbatch.batch.JobExecutionListener;
-import com.example.pracspringbatch.batch.Tasklet;
-import com.example.pracspringbatch.customer.Customer;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Component;
+import lombok.Builder;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-@Component
 public class Job {
 
     private final Tasklet tasklet;
     private final JobExecutionListener jobExecutionListener;
 
+    public Job(Tasklet tasklet) {
+        this(tasklet,null);
+    }
+
+    @Builder
+    public Job(ItemReader<?> itemReader , ItemProcessor<?,?> itemProcessor, ItemWriter<?> itemWriter, JobExecutionListener jobExecutionListener){
+        this(new SimpleTasklet(itemReader, itemProcessor,itemWriter),null);
+    }
+
     public Job(Tasklet tasklet, JobExecutionListener jobExecutionListener) {
         this.tasklet = tasklet;
-        this.jobExecutionListener = jobExecutionListener;
+        this.jobExecutionListener = Objects.requireNonNullElseGet(jobExecutionListener, () -> new JobExecutionListener() {
+            @Override
+            public void beforeJob(JobExecution jobExecution) {
+
+            }
+            @Override
+            public void afterJob(JobExecution jobExecution) {
+
+            }
+        });
     }
+
 
 
     public JobExecution execute() {

@@ -1,6 +1,7 @@
 package com.example.pracspringbatch.application;
 
 import com.example.pracspringbatch.batch.Job;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,12 +10,16 @@ public class DormantBatchConfiguration {
 
     @Bean
     public Job dormantBatchJob(
-            DormantBatchTasklet dormantBatchTasklet,
-            DormantBatchJobExecutionListener dormantBatchJobExecutionListener
+            DormantBatchItemReader itemReader,
+            DormantBatchItemProcessor itemProcessor,
+            DormantBatchItemWriter itemWriter,
+            DormantBatchJobExecutionListener listener
     ) {
-     return new Job(
-             dormantBatchTasklet,
-             dormantBatchJobExecutionListener
-     );
+        return Job.builder()
+                .itemReader(itemReader)
+                .itemProcessor(itemProcessor)
+                .itemWriter(itemWriter)
+                .jobExecutionListener(listener)
+                .build();
     }
 }
