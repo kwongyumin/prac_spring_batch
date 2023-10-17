@@ -1,8 +1,9 @@
-package com.example.pracspringbatch;
+package com.example.pracspringbatch.application.dormant;
 
 import com.example.pracspringbatch.batch.BatchStatus;
 import com.example.pracspringbatch.batch.Job;
 import com.example.pracspringbatch.batch.JobExecution;
+import com.example.pracspringbatch.batch.TaskletJob;
 import com.example.pracspringbatch.customer.Customer;
 import com.example.pracspringbatch.customer.CustomerRepository;
 import org.assertj.core.api.Assertions;
@@ -108,7 +109,7 @@ class DormantBatchJobTest {
     @Test
     @DisplayName("배치가 싪패하면 BatchStatus 는 FAILED 를 반환해야한다.")
     void test4() {
-        final Job dormantBatchJob = new Job(null,null);
+        final Job dormantBatchJob = new TaskletJob(null);
 
         final JobExecution result = dormantBatchJob.execute();
 

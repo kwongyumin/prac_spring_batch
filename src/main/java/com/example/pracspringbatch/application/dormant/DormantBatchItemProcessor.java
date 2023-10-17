@@ -1,4 +1,4 @@
-package com.example.pracspringbatch.application;
+package com.example.pracspringbatch.application.dormant;
 
 import com.example.pracspringbatch.batch.ItemProcessor;
 import com.example.pracspringbatch.customer.Customer;
