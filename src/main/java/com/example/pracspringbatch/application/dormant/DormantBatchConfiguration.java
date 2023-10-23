@@ -2,7 +2,8 @@ package com.example.pracspringbatch.application.dormant;
 
 import com.example.pracspringbatch.batch.Job;
 
-import com.example.pracspringbatch.batch.TaskletJob;
+import com.example.pracspringbatch.batch.Step;
+import com.example.pracspringbatch.batch.StepJobBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,16 +12,38 @@ public class DormantBatchConfiguration {
 
     @Bean
     public Job dormantBatchJob(
-            DormantBatchItemReader itemReader,
-            DormantBatchItemProcessor itemProcessor,
-            DormantBatchItemWriter itemWriter,
-            DormantBatchJobExecutionListener listener
+            Step preDormantBatchStep,
+            Step dormantBatchStep
     ) {
-        return TaskletJob.builder()
+        return new StepJobBuilder()
+                .start(preDormantBatchStep)
+                .next(dormantBatchStep)
+                .build();
+    }
+
+    @Bean
+    public Step dormantBatchStep(
+            AllCustomerItemReader itemReader,
+            DormantBatchItemProcessor itemProcessor,
+            DormantBatchItemWriter itemWriter
+    ) {
+        return Step.builder()
                 .itemReader(itemReader)
                 .itemProcessor(itemProcessor)
                 .itemWriter(itemWriter)
-                .jobExecutionListener(listener)
+                .build();
+    }
+
+    @Bean
+    public Step preDormantBatchStep(
+            AllCustomerItemReader itemReader,
+            PreDormantBatchItemProcessor itemProcessor,
+            PreDormantBatchItemWriter itemWriter
+    ) {
+        return Step.builder()
+                .itemReader(itemReader)
+                .itemProcessor(itemProcessor)
+                .itemWriter(itemWriter)
                 .build();
     }
 }

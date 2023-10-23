@@ -117,6 +117,20 @@ class DormantBatchJobTest {
 
     }
 
+    @Test
+    @DisplayName("365일 전에 로그인한 고객에게 휴먼계정 예정자라고 메일을 발송해야한다.")
+    void test5() {
+        //given
+        saveCustomer(358);
+        saveCustomer(358);
+        saveCustomer(358);
+
+        //when
+
+        //then
+        dormantBatchJob.execute();
+    }
+
     private void saveCustomer(long loginMinusDays) {
         final String uuid = UUID.randomUUID().toString();
         final Customer test = new Customer(uuid,uuid + "test@test.com");

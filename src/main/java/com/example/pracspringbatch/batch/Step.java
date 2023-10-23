@@ -1,5 +1,7 @@
 package com.example.pracspringbatch.batch;
 
+import lombok.Builder;
+
 public class Step {
 
     private final Tasklet tasklet;
@@ -8,9 +10,12 @@ public class Step {
         this.tasklet = tasklet;
     }
 
+    @Builder
     public Step(ItemReader<?> itemReader , ItemProcessor<?,?> itemProcessor , ItemWriter<?> itemWriter) {
         this.tasklet = new SimpleTasklet(itemReader,itemProcessor,itemWriter);
     }
+
+
 
     public void execute() {
         tasklet.execute();

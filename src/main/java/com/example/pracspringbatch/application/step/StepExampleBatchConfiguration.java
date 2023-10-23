@@ -1,9 +1,6 @@
 package com.example.pracspringbatch.application.step;
 
-import com.example.pracspringbatch.batch.Job;
-import com.example.pracspringbatch.batch.Step;
-import com.example.pracspringbatch.batch.StepJob;
-import com.example.pracspringbatch.batch.StepJobBuilder;
+import com.example.pracspringbatch.batch.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -28,7 +25,7 @@ public class StepExampleBatchConfiguration {
     }
 
     @Bean
-    public Step step1() {
+    public Step step1(){
         return new Step(() -> System.out.println("step1"));
     }
 
