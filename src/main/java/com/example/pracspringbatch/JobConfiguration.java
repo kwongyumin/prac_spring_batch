@@ -6,7 +6,10 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.NonTransientResourceException;
+import org.springframework.batch.item.ParseException;
+import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -24,12 +27,28 @@ public class JobConfiguration {
 
     @Bean
     public Step step(JobRepository jobRepository, PlatformTransactionManager platformTransactionManager) {
+
+        final ItemReader<Integer> itemReader = new ItemReader<>() {
+
+            private int count = 0;
+
+            @Override
+            public Integer read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+                count++;
+                log.info("Read {}",count);
+
+                if (count == 15) {
+                    return null;
+                }
+                return count;
+            }
+        };
+
         return new StepBuilder("step", jobRepository)
-                .tasklet((a,b) -> {
-                    log.info("step");
-                    return RepeatStatus.FINISHED;
-                    // throw new IllegalStateException("상태가 잘못되었습니다.");
-                }, platformTransactionManager)
+                .chunk(10,platformTransactionManager)
+                .reader(itemReader)
+                //.processor()
+                .writer(read -> {})
                 .build();
     }
 }
