@@ -40,9 +40,16 @@ public class JobConfiguration {
                 count++;
                 log.info("Read {}",count);
 
+                if (count == 20) {
+                    return null;
+                }
+
                 if (count > 15) {
                     throw new IllegalStateException("예외 발생");
                 }
+
+
+
                 return count;
             }
         };
@@ -55,7 +62,8 @@ public class JobConfiguration {
                 .faultTolerant()
 //                .skip(IllegalStateException.class)
 //                .skipLimit(5)
-                .skipPolicy((t, skipCount) -> t instanceof IllegalStateException && skipCount < 5)
+//                .skipPolicy((t, skipCount) -> t instanceof IllegalStateException && skipCount < 5)
+                .noRollback(IllegalStateException.class)
                 .build();
     }
 }
