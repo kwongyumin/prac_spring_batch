@@ -11,7 +11,6 @@ public class PracSpringBatchApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(PracSpringBatchApplication.class, args);
-        System.out.println("TEST");
     }
 
 }
