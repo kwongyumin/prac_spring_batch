@@ -1,5 +1,7 @@
 package com.example.pracspringbatch;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -7,6 +9,10 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.database.JpaCursorItemReader;
+import org.springframework.batch.item.database.JpaPagingItemReader;
+import org.springframework.batch.item.database.builder.JpaCursorItemReaderBuilder;
+import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.transform.Range;
@@ -71,6 +77,30 @@ public class ItemReaderJobConfiguration {
                 .name("jsonItemReader")
                 .resource(new ClassPathResource("users.json"))
                 .jsonObjectReader(new JacksonJsonObjectReader<>(User.class))
+                .build();
+    }
+
+    @Bean
+    public ItemReader<User> jpaPagingItemReader(
+            EntityManagerFactory entityManagerFactory
+    ) {
+        return new JpaPagingItemReaderBuilder<User>()
+                .name("jpaPagingItemReader")
+                .entityManagerFactory(entityManagerFactory)
+                .pageSize(3)
+                .queryString("SELECT u FROM User u ORDER BY u.id")
+                .build();
+
+    }
+
+    @Bean
+    public ItemReader<User> jpaCursorItemReader(
+            EntityManagerFactory entityManagerFactory
+    ) {
+        return new JpaCursorItemReaderBuilder<User>()
+                .name("jpaCursorItemReader")
+                .entityManagerFactory(entityManagerFactory)
+                .queryString("SELECT u FROM User u ORDER BY u.id")
                 .build();
     }
 
